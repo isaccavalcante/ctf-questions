@@ -16,5 +16,4 @@ def generate_invoice(name, cpf):
     pdf_filename = html_filename.replace(".html", ".pdf")    
     html = weasyprint.HTML(html_filename)
     html.write_pdf(pdf_filename)
-
-generate_invoice("Isac", "23984234")
+    return pdf_filename

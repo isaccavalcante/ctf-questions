@@ -1,0 +1,4 @@
+*.pdf
+invoice*.html
+database.db
+__pycache__/

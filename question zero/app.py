@@ -1,5 +1,7 @@
 from flask import Flask,render_template,flash, redirect,url_for,session,logging,request
 from flask_sqlalchemy import SQLAlchemy
+from flask import make_response
+import writer
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -16,6 +18,22 @@ class user(db.Model):
 def index():
     return render_template("index.html")
 
+
+@app.route("/invoice")
+def invoice():
+    _id = request.args.get("id")
+    name = request.args.get("name")
+    cpf = request.args.get("cpf")
+    filename = writer.generate_invoice(name, cpf)
+    with open(filename, "rb") as f:
+        binary_pdf = f.read()
+    response = make_response(binary_pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = \
+        f'inline; filename={filename}'
+    return response
+
+    #return render_template("index.html")
 
 
 @app.route("/login",methods=["GET", "POST"])
