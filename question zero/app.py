@@ -19,7 +19,7 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/invoice")
+@app.route("/invoice.php")
 def invoice():
     _id = request.args.get("id")
     name = request.args.get("name")
