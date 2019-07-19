@@ -1,0 +1,4 @@
+weasyprint
+SQLAlchemy
+flask
+flask_sqlalchemy
