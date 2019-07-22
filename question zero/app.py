@@ -7,24 +7,21 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db = SQLAlchemy(app)
 
-
-class user(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80))
-    email = db.Column(db.String(120))
+class User(db.Model):
+    seq = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80))
+    cpf = db.Column(db.String(120))
     password = db.Column(db.String(80))
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
-
 @app.route("/invoice.php")
-def invoice():
-    _id = request.args.get("id")
-    name = request.args.get("name")
-    cpf = request.args.get("cpf")
-    filename = writer.generate_invoice(name, cpf)
+def get_invoice():
+    seq = request.args.get("seq")
+    user = db.session.query(User).get(seq)
+    filename = writer.generate_invoice(user.name, user.cpf)
     with open(filename, "rb") as f:
         binary_pdf = f.read()
     response = make_response(binary_pdf)
@@ -33,10 +30,20 @@ def invoice():
         f'inline; filename={filename}'
     return response
 
-    #return render_template("index.html")
+@app.route("/invoice.php?name=<name>&seq=<seq>&cpf=<cpf>")
+def invoice(name, cpf, seq):
+    print("------->", seq)
+    user = db.session.query(User).get(seq)
+    filename = writer.generate_invoice(user.name, user.cpf)
+    with open(filename, "rb") as f:
+        binary_pdf = f.read()
+    response = make_response(binary_pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = \
+        f'inline; filename={filename}'
+    return response
 
-
-@app.route("/login",methods=["GET", "POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         uname = request.form["uname"]
@@ -50,15 +57,15 @@ def login():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        uname = request.form['uname']
-        mail = request.form['mail']
-        passw = request.form['passw']
+        name = request.form['name']
+        cpf = request.form['cpf']
+        password = request.form['password']
 
-        register = user(username = uname, email = mail, password = passw)
-        db.session.add(register)
+        user = User(name=name, cpf=cpf, password=password)
+        db.session.add(user)
         db.session.commit()
 
-        return redirect(url_for("login"))
+        return redirect(url_for("invoice", name=name, cpf=cpf, seq=user.seq))
     return render_template("register.html")
 
 if __name__ == "__main__":

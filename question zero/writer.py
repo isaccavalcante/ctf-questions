@@ -3,6 +3,10 @@ import weasyprint
 
 
 def parse_template(name, cpf):
+    if not name:
+        name = ""
+    if not cpf:
+        cpf = ""
     html_filename = f'invoice-{name}-{cpf}.html' 
     with open("templates/invoice.html") as f:
         parsed_template = f.read().replace("{{ name }}", name).replace("{{ cpf }}", cpf)
