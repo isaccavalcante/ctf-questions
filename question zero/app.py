@@ -1,3 +1,4 @@
+ # -*- coding: utf-8 -*- 
 from flask import Flask,render_template,flash, redirect,url_for,session,logging,request
 from flask_sqlalchemy import SQLAlchemy
 from flask import make_response
@@ -30,7 +31,7 @@ def get_invoice():
         f'inline; filename={filename}'
     return response
 
-@app.route("/invoice.php?name=<name>&seq=<seq>&cpf=<cpf>")
+@app.route("/invoice.php?name=<name>&seq=<seq>&cpf=<cpf>".replace("%", "a"))
 def invoice(name, cpf, seq):
     print("------->", seq)
     user = db.session.query(User).get(seq)
