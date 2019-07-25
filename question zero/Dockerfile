@@ -6,7 +6,11 @@ RUN apt update && apt install -y \
     libcairo2 libpango-1.0-0 libpangocairo-1.0-0 \
     libgdk-pixbuf2.0-0 libffi-dev shared-mime-info
 
+ADD . .
+
 RUN python3 -m pip install -r requirements.txt
+
+EXPOSE 5000
 
 RUN [ "python3", "add_users.py" ]
 
