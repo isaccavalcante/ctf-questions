@@ -8,7 +8,7 @@ def parse_template(name, cpf):
     if not cpf:
         cpf = ""
     html_filename = f'invoice-{name}-{cpf}.html' 
-    with open("templates/invoice.html") as f:
+    with open("templates/invoice.html", encoding="utf-8") as f:
         parsed_template = f.read().replace("{{ name }}", name).replace("{{ cpf }}", cpf)
     with open(html_filename, "w") as f:
         f.write(parsed_template)

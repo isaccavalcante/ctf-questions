@@ -44,17 +44,6 @@ def invoice(name, cpf, seq):
         f'inline; filename={filename}'
     return response
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        uname = request.form["uname"]
-        passw = request.form["passw"]
-        
-        login = user.query.filter_by(username=uname, password=passw).first()
-        if login is not None:
-            return redirect(url_for("index"))
-    return render_template("login.html")
-
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
