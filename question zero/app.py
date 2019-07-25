@@ -16,7 +16,7 @@ class User(db.Model):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return register()
 
 @app.route("/invoice.php")
 def get_invoice():
